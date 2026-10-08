@@ -12,7 +12,7 @@ python3 -m http.server 4958 --bind 127.0.0.1 --directory /Users/pc-38/Claude/fol
 
 | Зона | Default | Hover / focus / tap |
 |---|---|---|
-| Hire, Onboard, Monitor | белый фон, text link «Start … →», product card | фон `#eeeef2`, subtitle сдвигается на 4px, 4 ссылки (20px) по stagger, белый CTA с 44px стрелкой. У Onboard бордеры `#c1cfe6` → `#d5d5d5` |
+| Hire, Onboard, Monitor | белый фон, text link «Start … →», product card | фон `#eeeef2`, subtitle стоит на месте (в Figma сдвиг +4px – убран по просьбе), 4 ссылки (20px) по stagger, белый CTA с 44px стрелкой. У Onboard бордеры `#c1cfe6` → `#d5d5d5` |
 | Insights | sparkle (белый круг, градиентная звезда), text link «Get insights →» | sparkle → active-вариант (`#F1F6FD` + `#2E6274`) с поворотом на 90°, ряд ссылок + CTA «Get insights» |
 
 - **Motion**: вход – default-контент уходит за 140ms, ссылки появляются со stagger 40ms (opacity 300ms + translateY 10px → 0, expo-out 520ms), CTA последним. Выход – быстрый (140ms, без stagger), default-контент возвращается с задержкой 90ms, чтобы слои не пересекались

@@ -147,7 +147,6 @@ img { display: block; }
   letter-spacing: -0.09px;
   color: var(--ink-2);
   white-space: nowrap;
-  transition: transform var(--t-move) var(--ease-out);
 }
 
 .stage-body {
@@ -275,7 +274,6 @@ img { display: block; }
 /* ---- active ---- */
 .stage.is-active { background: var(--col-bg-hover); }
 .stage-mid.is-active { border-color: var(--line-hover); }
-.stage.is-active .stage-sub { transform: translateY(4px); }
 .stage.is-active .layer-hover { pointer-events: auto; }
 
 .stage.is-active .text-link,
