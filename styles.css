@@ -559,15 +559,25 @@ img { display: block; }
 /* ==========================================================================
    Insights band
    ========================================================================== */
+/* bottom stop of the band gradient, registered so it can transition */
+@property --ins-bottom {
+  syntax: "<color>";
+  inherits: false;
+  initial-value: #e8f0ff;
+}
+
 .insights {
+  --ins-bottom: #e8f0ff;
   position: relative;
   height: 305px;
   border-top: 1px solid var(--line);
-  background: linear-gradient(180deg, #fff 0%, #e8f0ff 100%);
+  background: linear-gradient(180deg, #fff 0%, var(--ins-bottom) 100%);
   overflow: hidden;
   text-align: center;
   -webkit-tap-highlight-color: transparent;
+  transition: --ins-bottom var(--t-bg) var(--ease);
 }
+.insights.is-active { --ins-bottom: #d8e5ff; }   /* a touch darker at the bottom on hover */
 
 .conn { position: absolute; top: 0; }
 .conn img { width: 100%; height: 100%; }
