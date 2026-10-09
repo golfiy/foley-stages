@@ -577,7 +577,7 @@ img { display: block; }
   -webkit-tap-highlight-color: transparent;
   transition: --ins-bottom var(--t-bg) var(--ease);
 }
-.insights.is-active { --ins-bottom: #d8e5ff; }   /* a touch darker at the bottom on hover */
+.insights.is-active { --ins-bottom: #ccd6ec; }   /* a touch darker at the bottom on hover */
 
 .conn { position: absolute; top: 0; }
 .conn img { width: 100%; height: 100%; }

@@ -13,7 +13,7 @@ python3 -m http.server 4958 --bind 127.0.0.1 --directory /Users/pc-38/Claude/fol
 | Зона | Default | Hover / focus / tap |
 |---|---|---|
 | Hire, Onboard, Monitor | белый фон, CTA «Start … →» без подложки, product card | фон `#eeeef2`, CTA на той же высоте превращается в белую кнопку (плашка по линии текста, label въезжает на 24px), ниже 4 ссылки (20px) по stagger. Subtitle стоит на месте. У Onboard бордеры `#c1cfe6` → `#d5d5d5` |
-| Insights | sparkle (белый круг, градиентная звезда), CTA «Get insights →» без подложки | низ градиента `#E8F0FF` → `#D8E5FF` (плавно, через `@property`), sparkle → active-вариант (`#F1F6FD` + `#2E6274`) с поворотом на 90°, ряд ссылок, под CTA проявляется белая плашка |
+| Insights | sparkle (белый круг, градиентная звезда), CTA «Get insights →» без подложки | низ градиента `#E8F0FF` → `#CCD6EC` (плавно, через `@property`), sparkle → active-вариант (`#F1F6FD` + `#2E6274`) с поворотом на 90°, ряд ссылок, под CTA проявляется белая плашка |
 
 - **Motion**: вход – default-контент уходит за 140ms, ссылки появляются со stagger 40ms (opacity 300ms + translateY 10px → 0, expo-out 520ms), плашка CTA – opacity + scale .96 → 1. Выход – быстрый (140ms, без stagger), default-контент возвращается с задержкой 90ms, чтобы слои не пересекались
 - **Микро**: ссылка в hover-стейте – стрелка `→` уезжает на 4px, CTA – стрелка на 3px
