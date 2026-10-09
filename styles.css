@@ -166,28 +166,34 @@ img { display: block; }
 }
 
 /* ---- CTA: one element for both states.
-   Label and arrow never move; on hover a white plate fades in behind them
-   (52px tall like the Figma CTA, 24px side padding hanging outside the text column). */
+   Columns: the white plate starts flush with the text column (x=32, same line as title and links);
+   on hover the label slides 24px into it, so the button forms around the text instead of swapping.
+   Insights (centred): the plate grows evenly around the label, the label stays put. */
 .stage-cta {
   --plate-x: 24px;
   position: relative;
   isolation: isolate;
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
   justify-self: start;
   margin: 12px 0 0 32px;
   padding: 16px 0;
   white-space: nowrap;
 }
+.stage-cta-in {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform calc(220ms * var(--slow)) var(--ease);
+}
 .stage-cta::before {
   content: "";
   position: absolute;
-  inset: 2px calc(var(--plate-x) * -1);
+  inset: 2px calc(var(--plate-x) * -2) 2px 0;   /* 52px tall; right side covers the 24px shift + 24px padding */
   z-index: -1;
   background: #fff;
   opacity: 0;
   transform: scale(.96);
+  transform-origin: left center;
   transition:
     opacity calc(160ms * var(--slow)) linear,
     transform calc(200ms * var(--slow)) var(--ease-in);
@@ -203,6 +209,10 @@ img { display: block; }
   transition:
     opacity calc(220ms * var(--slow)) var(--ease),
     transform calc(420ms * var(--slow)) var(--ease-out);
+}
+.stage.is-active .stage-cta-in {
+  transform: translateX(var(--plate-x));
+  transition: transform calc(460ms * var(--slow)) var(--ease-out);
 }
 .stage-cta:hover img { transform: translateX(3px); }
 
@@ -655,6 +665,10 @@ img { display: block; }
   margin: 0;
   translate: -50% 0;
 }
+.insights .stage-cta::before {
+  inset: 2px calc(var(--plate-x) * -1);
+  transform-origin: center;
+}
 
 /* ==========================================================================
    Responsive
@@ -678,7 +692,7 @@ img { display: block; }
   .stage-head { padding: 28px 20px 0; }
   .stage-title { font-size: 28px; }
   .stage-sub { font-size: 17px; }
-  .stage-cta { --plate-x: 16px; margin-left: 20px; }
+  .stage-cta { margin-left: 20px; }
   .product { margin-top: 12px; margin-bottom: 0; }
   .layer-default { padding-bottom: 0; }
   .layer-hover { padding: 36px 0 24px; }
@@ -731,6 +745,7 @@ img { display: block; }
   .stage-cta::before,
   .stage-links li, .insights-links li { transform: none !important; }
   .insights.is-active .sparkle { transform: none; }
+  .stage-cta-in { transition: none !important; }   /* label still shifts into the plate, just without the slide */
 }
 
 /* screenshot mode: freeze */
