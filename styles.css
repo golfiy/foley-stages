@@ -76,20 +76,19 @@ img { display: block; }
 /* --------------------------------------------------------------------------
    Display type (Inter Display; falls back to Inter @ opsz 32)
    -------------------------------------------------------------------------- */
-.stage-title, .stage-sub, .text-link, .stage-links, .cta,
+.stage-title, .stage-sub, .stage-cta, .stage-links,
 .insights-title, .insights-sub, .insights-links {
   font-family: var(--font-display);
   font-variation-settings: "opsz" 32;
 }
 
-.text-link, .cta, .link-strong {
+.stage-cta, .link-strong {
   font-weight: 600;
   font-size: 18px;
   line-height: 24px;
   letter-spacing: -0.5px;
-  color: var(--ink);
+  color: var(--link-ink);
 }
-.text-link, .link-strong { color: var(--link-ink); }
 
 /* ==========================================================================
    Stage columns
@@ -103,7 +102,7 @@ img { display: block; }
   min-width: 0;
   height: 496px;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: auto auto 1fr;      /* head, CTA, body */
   grid-template-columns: minmax(0, 1fr);   /* long nowrap subtitle must not widen the column */
   overflow: hidden;
   background: var(--col-bg);
@@ -162,20 +161,50 @@ img { display: block; }
 .layer-default {
   display: flex;
   flex-direction: column;
-  padding-top: 12px;
+  padding-top: 16px;
   pointer-events: none;
 }
 
-.text-link {
+/* ---- CTA: one element for both states.
+   Label and arrow never move; on hover a white plate fades in behind them
+   (52px tall like the Figma CTA, 24px side padding hanging outside the text column). */
+.stage-cta {
+  --plate-x: 24px;
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  align-self: flex-start;
+  justify-self: start;
+  margin: 12px 0 0 32px;
   padding: 16px 0;
-  margin-left: 32px;
   white-space: nowrap;
 }
-.text-link img { width: 13.7px; height: 16.54px; }
+.stage-cta::before {
+  content: "";
+  position: absolute;
+  inset: 2px calc(var(--plate-x) * -1);
+  z-index: -1;
+  background: #fff;
+  opacity: 0;
+  transform: scale(.96);
+  transition:
+    opacity calc(160ms * var(--slow)) linear,
+    transform calc(200ms * var(--slow)) var(--ease-in);
+}
+.stage-cta img {
+  width: 13.7px;
+  height: 16.54px;
+  transition: transform calc(260ms * var(--slow)) var(--ease-out);
+}
+.is-active .stage-cta::before {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity calc(220ms * var(--slow)) var(--ease),
+    transform calc(420ms * var(--slow)) var(--ease-out);
+}
+.stage-cta:hover img { transform: translateX(3px); }
 
 .product {
   --z: 1;
@@ -196,7 +225,7 @@ img { display: block; }
 .layer-hover {
   display: flex;
   flex-direction: column;
-  padding: 68px 0 32px;             /* links start at y=169, CTA ends 32 from bottom */
+  padding: 62px 0 32px;             /* body starts at y=169 → links at y=231, 64 below the CTA plate */
   pointer-events: none;
 }
 
@@ -222,23 +251,6 @@ img { display: block; }
   transition: transform calc(220ms * var(--slow)) var(--ease-out);
 }
 
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  align-self: flex-start;
-  margin: auto 0 0 32px;
-  padding: 4px 4px 4px 24px;
-  background: #fff;
-  white-space: nowrap;
-}
-.cta-icon { width: 44px; height: 44px; flex: none; overflow: hidden; }
-.cta-icon img {
-  width: 44px;
-  height: 44px;
-  transition: transform calc(260ms * var(--slow)) var(--ease-out);
-}
-
 /* ==========================================================================
    State machine: default ⇄ active
    Leaving: hover content drops out fast, default content returns with a short lead.
@@ -246,8 +258,7 @@ img { display: block; }
    ========================================================================== */
 
 /* default-layer pieces (visible at rest) */
-.layer-default > *,
-.insights .text-link {
+.layer-default > * {
   opacity: 1;
   transform: none;
   transition:
@@ -257,9 +268,7 @@ img { display: block; }
 
 /* hover-layer pieces (hidden at rest) */
 .stage-links li,
-.layer-hover .cta,
-.insights-links li,
-.insights .cta {
+.insights-links li {
   opacity: 0;
   transform: translateY(10px);
   transition:
@@ -271,21 +280,11 @@ img { display: block; }
 .stage-links li:nth-child(2), .insights-links li:nth-child(2) { --i: 1; }
 .stage-links li:nth-child(3), .insights-links li:nth-child(3) { --i: 2; }
 .stage-links li:nth-child(4), .insights-links li:nth-child(4) { --i: 3; }
-.layer-hover .cta, .insights .cta { --i: 4; }
 
 /* ---- active ---- */
 .stage.is-active { background: var(--col-bg-hover); }
 .stage-mid.is-active { border-color: var(--line-hover); }
 .stage.is-active .layer-hover { pointer-events: auto; }
-
-.stage.is-active .text-link,
-.insights.is-active .text-link {
-  opacity: 0;
-  transform: translateY(-6px);
-  transition:
-    opacity var(--t-out) linear,
-    transform var(--t-out) var(--ease-in);
-}
 
 .stage.is-active .product {
   opacity: 0;
@@ -296,9 +295,7 @@ img { display: block; }
 }
 
 .is-active .stage-links li,
-.is-active .layer-hover .cta,
-.insights.is-active .insights-links li,
-.insights.is-active .cta {
+.insights.is-active .insights-links li {
   opacity: 1;
   transform: none;
   transition:
@@ -309,7 +306,6 @@ img { display: block; }
 /* micro-interactions inside the active state */
 .stage-links a:hover .arr,
 .insights-links a:hover .arr { transform: translateX(4px); }
-.cta:hover .cta-icon img { transform: translateX(3px); }
 .link-strong:hover img { transform: translateX(3px); }
 
 /* keyboard focus */
@@ -318,7 +314,9 @@ img { display: block; }
   outline: 2px solid var(--ink);
   outline-offset: 4px;
 }
-.cta:focus-visible { outline-offset: 3px; }
+.stage .stage-cta:focus-visible,
+.insights .stage-cta:focus-visible { outline: none; }
+.stage-cta:focus-visible::before { outline: 2px solid var(--ink); outline-offset: 3px; }
 
 /* ==========================================================================
    Product cards (static illustrations, 1:1 with Figma components)
@@ -616,14 +614,6 @@ img { display: block; }
 .insights-body { position: absolute; inset: 0; pointer-events: none; }
 .insights.is-active .insights-body { pointer-events: auto; }
 
-.insights .text-link {
-  position: absolute;
-  left: 50%;
-  top: 227px;
-  margin: 0;
-  translate: -50% 0;
-}
-
 .insights-links {
   position: absolute;
   left: calc(50% - 9.5px);
@@ -658,8 +648,8 @@ img { display: block; }
 .link-strong { display: inline-flex !important; align-items: center; gap: 8px; }
 .link-strong img { width: 13.7px; height: 16.54px; transition: transform calc(220ms * var(--slow)) var(--ease-out); }
 
-.insights .cta {
-  position: absolute;
+.insights .stage-cta {
+  position: absolute;               /* still the containing block for the plate */
   left: 50%;
   top: 227px;
   margin: 0;
@@ -688,12 +678,11 @@ img { display: block; }
   .stage-head { padding: 28px 20px 0; }
   .stage-title { font-size: 28px; }
   .stage-sub { font-size: 17px; }
-  .text-link { margin-left: 20px; }
+  .stage-cta { --plate-x: 16px; margin-left: 20px; }
   .product { margin-top: 12px; margin-bottom: 0; }
   .layer-default { padding-bottom: 0; }
-  .layer-hover { padding: 40px 0 24px; }
+  .layer-hover { padding: 36px 0 24px; }
   .stage-links { padding: 0 20px; gap: 20px; font-size: 19px; }
-  .layer-hover .cta { margin: 32px 0 0 20px; }
 
   /* insights: flow layout */
   .insights {
@@ -722,16 +711,15 @@ img { display: block; }
     pointer-events: auto;
   }
   /* no hover on small screens: the band always shows its links */
-  .insights .text-link { display: none; }
   .insights-links,
-  .insights .cta { position: static; translate: none; }
+  .insights .stage-cta { position: static; translate: none; }
   .insights-links {
     flex-direction: column;
     gap: 12px;
     padding: 0;
   }
   .insights .insights-links li,
-  .insights .cta { opacity: 1; transform: none; }
+  .insights .stage-cta::before { opacity: 1; transform: none; }
 }
 
 /* ==========================================================================
@@ -740,9 +728,8 @@ img { display: block; }
 @media (prefers-reduced-motion: reduce) {
   :root { --t-move: 1ms; --stagger: 0ms; --lead: 0ms; }
   .stage.is-active .product,
-  .stage.is-active .text-link,
-  .insights.is-active .text-link,
-  .stage-links li, .layer-hover .cta, .insights-links li, .insights .cta { transform: none !important; }
+  .stage-cta::before,
+  .stage-links li, .insights-links li { transform: none !important; }
   .insights.is-active .sparkle { transform: none; }
 }
 
